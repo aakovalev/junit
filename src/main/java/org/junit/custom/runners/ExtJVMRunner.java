@@ -1,4 +1,4 @@
-package org.junit.custom;
+package org.junit.custom.runners;
 
 import org.junit.Test;
 import org.junit.runner.Description;
