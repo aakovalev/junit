@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import static org.junit.custom.runners.NotificationType.FireTestStarted;
+import static org.junit.runner.Description.createSuiteDescription;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -16,6 +17,7 @@ public class RemoteRunListenerTest {
 
     private static final int LISTENER_PORT = 1234;
     private static final int TIMEOUT = 1000;
+    private static final String LOCALHOST = "localhost";
 
     @Test
     public void nothing() throws IOException {
@@ -24,21 +26,20 @@ public class RemoteRunListenerTest {
         listener.start();
         RunNotification notification = createNotification(FireTestStarted);
 
-        send(notification, LISTENER_PORT);
+        sendToListener(notification);
 
         verify(notifier, timeout(TIMEOUT))
                 .fireTestStarted(eq(notification.getDescription()));
     }
 
-    private void send(RunNotification notification, int port) throws IOException {
-        Socket client = new Socket("localhost", port);
+    private void sendToListener(RunNotification notification) throws IOException {
+        Socket client = new Socket(LOCALHOST, LISTENER_PORT);
         ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
         out.writeObject(notification);
     }
 
     private RunNotification createNotification(NotificationType type) {
-        Description description =
-                Description.createSuiteDescription("Remote test started");
+        Description description = createSuiteDescription(type.name());
         return new RunNotification(type, description);
     }
 }
