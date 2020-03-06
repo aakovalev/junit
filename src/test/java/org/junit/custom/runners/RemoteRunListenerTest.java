@@ -20,7 +20,7 @@ public class RemoteRunListenerTest {
     private static final String LOCALHOST = "localhost";
 
     @Test
-    public void nothing() throws IOException {
+    public void canHandleFireTestStartedNotification() throws IOException {
         RunNotifier notifier = mock(RunNotifier.class);
         RemoteRunListener listener = new RemoteRunListener(LISTENER_PORT, notifier);
         listener.start();
