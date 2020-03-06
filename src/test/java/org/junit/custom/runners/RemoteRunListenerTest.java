@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.custom.runners.NotificationType.FireTestStarted;
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.mockito.Matchers.eq;
@@ -30,6 +31,18 @@ public class RemoteRunListenerTest {
 
         verify(notifier, timeout(TIMEOUT))
                 .fireTestStarted(eq(notification.getDescription()));
+
+        listener.stop();
+    }
+
+    @Test
+    public void canStopListener() throws IOException {
+        RunNotifier notifier = mock(RunNotifier.class);
+        RemoteRunListener listener = new RemoteRunListener(LISTENER_PORT, notifier);
+        listener.start();
+        listener.stop();
+
+        assertTrue(portIsAvailable(LISTENER_PORT));
     }
 
     private void sendToListener(RunNotification notification) throws IOException {
@@ -41,5 +54,17 @@ public class RemoteRunListenerTest {
     private RunNotification createNotification(NotificationType type) {
         Description description = createSuiteDescription(type.name());
         return new RunNotification(type, description);
+    }
+
+    private boolean portIsAvailable(int port) {
+        boolean result = false;
+        try (Socket socket = new Socket(LOCALHOST, port)) {
+            socket.close();
+            result = true;
+        }
+        catch(Exception e) {
+            // Could not connect.
+        }
+        return result;
     }
 }

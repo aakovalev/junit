@@ -12,6 +12,7 @@ import java.net.Socket;
 class RemoteRunListener {
     private int port;
     private final RunNotifier notifier;
+    private ObjectInputStream in;
 
     public RemoteRunListener(int port, RunNotifier notifier) {
         this.port = port;
@@ -21,9 +22,8 @@ class RemoteRunListener {
     public void start() throws IOException {
         final ServerSocket serverSocket = new ServerSocket(port);
         new Thread(() -> {
-            try {
-                Socket socket = serverSocket.accept();
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            try (Socket socket = serverSocket.accept()) {
+                in = new ObjectInputStream(socket.getInputStream());
                 while (true) {
                     RunNotification notification = (RunNotification) in.readObject();
                     if (NotificationType.FireTestStarted == notification.getType()) {
@@ -36,6 +36,21 @@ class RemoteRunListener {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }).start();
+    }
+
+    public void stop() {
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
