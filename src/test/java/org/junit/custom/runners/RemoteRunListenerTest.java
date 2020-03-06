@@ -1,5 +1,7 @@
 package org.junit.custom.runners;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -19,11 +21,22 @@ public class RemoteRunListenerTest {
     private static final int LISTENER_PORT = 1234;
     private static final int TIMEOUT = 1000;
     private static final String LOCALHOST = "localhost";
+    private RemoteRunListener listener;
+    private RunNotifier notifier;
+
+    @Before
+    public void setUp() {
+        notifier = mock(RunNotifier.class);
+        listener = new RemoteRunListener(LISTENER_PORT, notifier);
+    }
+
+    @After
+    public void tearDown() {
+        listener.stop();
+    }
 
     @Test
     public void canHandleFireTestStartedNotification() throws IOException {
-        RunNotifier notifier = mock(RunNotifier.class);
-        RemoteRunListener listener = new RemoteRunListener(LISTENER_PORT, notifier);
         listener.start();
         RunNotification notification = createNotification(FireTestStarted);
 
@@ -31,15 +44,12 @@ public class RemoteRunListenerTest {
 
         verify(notifier, timeout(TIMEOUT))
                 .fireTestStarted(eq(notification.getDescription()));
-
-        listener.stop();
     }
 
     @Test
     public void canStopListener() throws IOException {
-        RunNotifier notifier = mock(RunNotifier.class);
-        RemoteRunListener listener = new RemoteRunListener(LISTENER_PORT, notifier);
         listener.start();
+
         listener.stop();
 
         assertTrue(portIsAvailable(LISTENER_PORT));
@@ -61,8 +71,7 @@ public class RemoteRunListenerTest {
         try (Socket socket = new Socket(LOCALHOST, port)) {
             socket.close();
             result = true;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             // Could not connect.
         }
         return result;
