@@ -3,6 +3,7 @@ package org.junit.custom.runners;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.runner.notification.RunNotifier;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
@@ -36,21 +37,21 @@ class RemoteRunListener {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            close(serverSocket);
         }).start();
+    }
+
+    private void close(Closeable resource) {
+        try {
+            resource.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() {
         if (in != null) {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            close(in);
         }
     }
 }
