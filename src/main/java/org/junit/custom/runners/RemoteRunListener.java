@@ -31,11 +31,8 @@ class RemoteRunListener {
                         notifier.fireTestStarted(notification.getDescription());
                     }
                 }
-            } catch (IOException e) {
-                System.out.println("Something went wrong: " + e.getMessage());
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException | ClassNotFoundException e) {
+                log.warn("Something went wrong...", e);
             }
             close(serverSocket);
         }).start();
