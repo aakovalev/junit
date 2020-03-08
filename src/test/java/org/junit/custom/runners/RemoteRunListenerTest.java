@@ -8,6 +8,7 @@ import org.junit.runner.notification.RunNotifier;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 import static org.junit.Assert.assertTrue;
@@ -31,7 +32,7 @@ public class RemoteRunListenerTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException, IOException {
         listener.stop();
     }
 
@@ -47,7 +48,7 @@ public class RemoteRunListenerTest {
     }
 
     @Test
-    public void canStopListener() throws IOException {
+    public void canStopListener() throws IOException, InterruptedException {
         listener.start();
 
         listener.stop();
@@ -68,11 +69,11 @@ public class RemoteRunListenerTest {
 
     private boolean portIsAvailable(int port) {
         boolean result = false;
-        try (Socket socket = new Socket(LOCALHOST, port)) {
-            socket.close();
+        try (ServerSocket ignored = new ServerSocket(port)) {
             result = true;
         } catch (Exception e) {
-            // Could not connect.
+            System.out.println("Could not connect to port " + port);
+            e.printStackTrace();
         }
         return result;
     }

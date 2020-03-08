@@ -3,9 +3,7 @@ package org.junit.custom.runners;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.runner.notification.RunNotifier;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -13,7 +11,9 @@ import java.net.Socket;
 class RemoteRunListener {
     private int port;
     private final RunNotifier notifier;
-    private ObjectInputStream in;
+    private Socket clientSocket;
+    private ServerSocket serverSocket;
+    private Thread clientThread;
 
     public RemoteRunListener(int port, RunNotifier notifier) {
         this.port = port;
@@ -21,10 +21,12 @@ class RemoteRunListener {
     }
 
     public void start() throws IOException {
-        final ServerSocket serverSocket = new ServerSocket(port);
-        new Thread(() -> {
-            try (Socket socket = serverSocket.accept()) {
-                in = new ObjectInputStream(socket.getInputStream());
+        serverSocket = new ServerSocket(port);
+        clientThread = new Thread(() -> {
+            ObjectInputStream in = null;
+            try {
+                clientSocket = serverSocket.accept();
+                in = new ObjectInputStream(clientSocket.getInputStream());
                 while (true) {
                     RunNotification notification = (RunNotification) in.readObject();
                     if (NotificationType.FireTestStarted == notification.getType()) {
@@ -34,21 +36,34 @@ class RemoteRunListener {
             } catch (IOException | ClassNotFoundException e) {
                 log.warn("Something went wrong...", e);
             }
+            finally {
+                close(in);
+                close(clientSocket);
+                close(serverSocket);
+            }
+        });
+        clientThread.start();
+    }
+
+    public void stop() throws InterruptedException, IOException {
+        if (clientSocket != null && !clientSocket.isClosed()) {
+            close(clientSocket);
+        }
+        if (serverSocket != null && !serverSocket.isClosed()) {
             close(serverSocket);
-        }).start();
+        }
+        if (clientThread != null && clientThread.isAlive()) {
+            clientThread.join();
+        }
     }
 
     private void close(Closeable resource) {
         try {
-            resource.close();
+            if (resource != null) {
+                resource.close();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void stop() {
-        if (in != null) {
-            close(in);
+            log.warn("Error while closing the resource", e);
         }
     }
 }
