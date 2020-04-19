@@ -33,6 +33,10 @@ class NotificationReceiver {
                         RunStartedEvent runStartedEvent = (RunStartedEvent) in.readObject();
                         runEventListener.onRunStartedEvent(runStartedEvent);
                     }
+                    if (RunEventType.RunFinished == runEventType) {
+                        RunFinishedEvent runFinishedEvent = (RunFinishedEvent) in.readObject();
+                        runEventListener.onRunFinished(runFinishedEvent);
+                    }
                 }
             } catch (IOException | ClassNotFoundException e) {
                 log.warn("Something went wrong...", e);

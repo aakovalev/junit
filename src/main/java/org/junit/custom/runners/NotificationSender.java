@@ -16,4 +16,9 @@ public class NotificationSender {
         out.writeObject(RunEventType.RunStarted);
         out.writeObject(event);
     }
+
+    public void sendRunFinished(RunFinishedEvent event) throws IOException {
+        out.writeObject(RunEventType.RunFinished);
+        out.writeObject(event);
+    }
 }
