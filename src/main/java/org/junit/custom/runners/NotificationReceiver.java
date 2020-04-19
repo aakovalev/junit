@@ -1,23 +1,23 @@
 package org.junit.custom.runners;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.runner.notification.RunNotifier;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 @Slf4j
-class RemoteRunListener {
+class NotificationReceiver {
     private int port;
-    private final RunNotifier notifier;
     private Socket clientSocket;
     private ServerSocket serverSocket;
     private Thread clientThread;
+    private RunEventListener runEventListener;
 
-    public RemoteRunListener(int port, RunNotifier notifier) {
+    public NotificationReceiver(int port) {
         this.port = port;
-        this.notifier = notifier;
     }
 
     public void start() throws IOException {
@@ -28,9 +28,10 @@ class RemoteRunListener {
                 clientSocket = serverSocket.accept();
                 in = new ObjectInputStream(clientSocket.getInputStream());
                 while (true) {
-                    RunNotification notification = (RunNotification) in.readObject();
-                    if (NotificationType.FireTestStarted == notification.getType()) {
-                        notifier.fireTestStarted(notification.getDescription());
+                    RunEventType runEventType = (RunEventType) in.readObject();
+                    if (RunEventType.RunStarted == runEventType) {
+                        RunStartedEvent runStartedEvent = (RunStartedEvent) in.readObject();
+                        runEventListener.onRunStartedEvent(runStartedEvent);
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
@@ -45,7 +46,7 @@ class RemoteRunListener {
         clientThread.start();
     }
 
-    public void stop() throws InterruptedException, IOException {
+    public void stop() throws InterruptedException {
         if (clientSocket != null && !clientSocket.isClosed()) {
             close(clientSocket);
         }
@@ -65,5 +66,9 @@ class RemoteRunListener {
         } catch (IOException e) {
             log.warn("Error while closing the resource", e);
         }
+    }
+
+    public void addListener(RunEventListener runEventListener) {
+        this.runEventListener = runEventListener;
     }
 }
