@@ -1,5 +1,6 @@
 package org.junit.custom.runners;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +18,8 @@ import static org.junit.runner.Description.createSuiteDescription;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 public class RemoteRunListenerTest {
-
     private static final int LISTENER_PORT = 1234;
     private static final int TIMEOUT = 1000;
     private static final String LOCALHOST = "localhost";
@@ -72,7 +73,7 @@ public class RemoteRunListenerTest {
         try (ServerSocket ignored = new ServerSocket(port)) {
             result = true;
         } catch (Exception e) {
-            System.out.println("Could not connect to port " + port);
+            log.info("Could not connect to port {}", port);
             e.printStackTrace();
         }
         return result;

@@ -1,5 +1,6 @@
 package org.junit.custom.runners;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -7,6 +8,7 @@ import org.junit.runner.notification.RunNotifier;
 
 import java.lang.reflect.Method;
 
+@Slf4j
 public class ExtJVMRunner extends Runner {
     private Class testClass;
 
@@ -22,7 +24,7 @@ public class ExtJVMRunner extends Runner {
 
     @Override
     public void run(RunNotifier notifier) {
-        System.out.println("Running " + testClass);
+        log.info("Running {}", testClass);
         try {
             Object testObject = testClass.newInstance();
             for (Method method : testClass.getMethods()) {
