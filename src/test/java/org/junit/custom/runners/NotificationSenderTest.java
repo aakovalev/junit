@@ -2,11 +2,11 @@ package org.junit.custom.runners;
 
 import org.junit.Test;
 import org.junit.runner.Description;
+import org.mockito.Mockito;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 public class NotificationSenderTest {
 
@@ -16,17 +16,21 @@ public class NotificationSenderTest {
 
     @Test
     public void testRunStarted() throws Exception {
-        CountDownLatch eventReceived = new CountDownLatch(1);
         NotificationReceiver receiver = new NotificationReceiver(PORT);
         receiver.start();
-        receiver.addListener(event -> eventReceived.countDown());
+        RunEventListener listener = Mockito.mock(RunEventListener.class);
+        receiver.addListener(listener);
         NotificationSender sender = new NotificationSender(LOCALHOST, PORT);
-        Description testRunDescription = Description
-                .createTestDescription(getClass(), "testRunStarted");
-        RunStartedEvent event = new RunStartedEvent(testRunDescription);
+        RunStartedEvent event = makeRunStartedEvent();
 
         sender.sendRunStarted(event);
 
-        assertTrue(eventReceived.await(TIMEOUT, TimeUnit.SECONDS));
+        verify(listener, timeout(TIMEOUT)).onRunStartedEvent(eq(event));
+    }
+
+    private RunStartedEvent makeRunStartedEvent() {
+        Description testRunDescription = Description
+                .createTestDescription(getClass(), "testRunStarted");
+        return new RunStartedEvent(testRunDescription);
     }
 }
