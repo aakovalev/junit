@@ -34,7 +34,7 @@ public class NotificationReceiverTest {
     }
 
     @After
-    public void tearDown() throws InterruptedException, IOException {
+    public void tearDown() throws InterruptedException {
         listener.stop();
     }
 

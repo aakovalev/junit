@@ -16,12 +16,10 @@ public class NotificationSenderTest {
 
     @Test
     public void testRunStarted() throws Exception {
-        CountDownLatch runStartedReceived = new CountDownLatch(1);
+        CountDownLatch eventReceived = new CountDownLatch(1);
         NotificationReceiver receiver = new NotificationReceiver(PORT);
         receiver.start();
-        receiver.addListener(event -> {
-            runStartedReceived.countDown();
-        });
+        receiver.addListener(event -> eventReceived.countDown());
         NotificationSender sender = new NotificationSender(LOCALHOST, PORT);
         Description testRunDescription = Description
                 .createTestDescription(getClass(), "testRunStarted");
@@ -29,7 +27,6 @@ public class NotificationSenderTest {
 
         sender.sendRunStarted(event);
 
-        boolean eventWasReceived = runStartedReceived.await(TIMEOUT, TimeUnit.SECONDS);
-        assertTrue(eventWasReceived);
+        assertTrue(eventReceived.await(TIMEOUT, TimeUnit.SECONDS));
     }
 }
