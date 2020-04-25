@@ -28,19 +28,7 @@ class NotificationReceiver {
                 clientSocket = serverSocket.accept();
                 in = new ObjectInputStream(clientSocket.getInputStream());
                 while (true) {
-                    RunEventType runEventType = (RunEventType) in.readObject();
-                    if (RunEventType.RunStarted == runEventType) {
-                        RunStartedEvent runStartedEvent = (RunStartedEvent) in.readObject();
-                        runEventListener.onRunStartedEvent(runStartedEvent);
-                    }
-                    if (RunEventType.RunFinished == runEventType) {
-                        RunFinishedEvent runFinishedEvent = (RunFinishedEvent) in.readObject();
-                        runEventListener.onRunFinished(runFinishedEvent);
-                    }
-                    if (RunEventType.TestStarted == runEventType) {
-                        TestStartedEvent testStarted = (TestStartedEvent) in.readObject();
-                        runEventListener.onTestStarted(testStarted);
-                    }
+                    handleInput(in);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 log.warn("Something went wrong...", e);
@@ -66,6 +54,10 @@ class NotificationReceiver {
         }
     }
 
+    public void addListener(RunEventListener runEventListener) {
+        this.runEventListener = runEventListener;
+    }
+
     private void close(Closeable resource) {
         try {
             if (resource != null) {
@@ -76,7 +68,19 @@ class NotificationReceiver {
         }
     }
 
-    public void addListener(RunEventListener runEventListener) {
-        this.runEventListener = runEventListener;
+    private void handleInput(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        RunEventType runEventType = (RunEventType) in.readObject();
+        if (RunEventType.RunStarted == runEventType) {
+            RunStartedEvent runStartedEvent = (RunStartedEvent) in.readObject();
+            runEventListener.onRunStartedEvent(runStartedEvent);
+        }
+        if (RunEventType.RunFinished == runEventType) {
+            RunFinishedEvent runFinishedEvent = (RunFinishedEvent) in.readObject();
+            runEventListener.onRunFinished(runFinishedEvent);
+        }
+        if (RunEventType.TestStarted == runEventType) {
+            TestStartedEvent testStarted = (TestStartedEvent) in.readObject();
+            runEventListener.onTestStarted(testStarted);
+        }
     }
 }
