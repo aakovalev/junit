@@ -82,5 +82,9 @@ class NotificationReceiver {
             TestStarted testStarted = (TestStarted) in.readObject();
             runEventListener.onTestStarted(testStarted);
         }
+        if (RunEventType.TestFinished == runEventType) {
+            TestFinished testFinished = (TestFinished) in.readObject();
+            runEventListener.onTestFinished(testFinished);
+        }
     }
 }

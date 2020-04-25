@@ -23,6 +23,7 @@ public class NotificationSenderTest {
     private static final int TIMEOUT = 3000;
     private static final String RUN_STARTED = "testRunStarted";
     private static final String TEST_STARTED = "testStarted";
+    private static final String TEST_FINISHED = "testFinished";
 
     private NotificationReceiver receiver;
     private RunEventListener listener;
@@ -61,6 +62,19 @@ public class NotificationSenderTest {
         TestStarted event = makeTestStartedEvent();
         sender.sendTestStarted(event);
         verify(listener, timeout(TIMEOUT)).onTestStarted(eq(event));
+    }
+
+    @Test
+    public void testTestFinished() throws IOException {
+        TestFinished event = makeTestFinishedEvent();
+        sender.sendTestFinished(event);
+        verify(listener, timeout(TIMEOUT)).onTestFinished(eq(event));
+    }
+
+    private TestFinished makeTestFinishedEvent() {
+        Description testDescription = Description
+                .createTestDescription(getClass(), TEST_FINISHED);
+        return new TestFinished(testDescription);
     }
 
     private TestStarted makeTestStartedEvent() {

@@ -6,4 +6,6 @@ public interface RunEventListener {
     void onRunFinished(RunFinished event);
 
     void onTestStarted(TestStarted event);
+
+    void onTestFinished(TestFinished event);
 }
