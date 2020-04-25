@@ -6,10 +6,10 @@ import org.junit.runner.Description;
 import java.io.Serializable;
 
 @EqualsAndHashCode
-public class TestStartedEvent implements Serializable {
+public class TestStarted implements Serializable {
     private Description description;
 
-    public TestStartedEvent(Description description) {
+    public TestStarted(Description description) {
         this.description = description;
     }
 }

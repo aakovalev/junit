@@ -1,9 +1,9 @@
 package org.junit.custom.runners;
 
 public interface RunEventListener {
-    void onRunStartedEvent(RunStartedEvent event);
+    void onRunStarted(RunStarted event);
 
-    void onRunFinished(RunFinishedEvent event);
+    void onRunFinished(RunFinished event);
 
-    void onTestStarted(TestStartedEvent event);
+    void onTestStarted(TestStarted event);
 }

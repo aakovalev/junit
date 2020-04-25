@@ -71,15 +71,15 @@ class NotificationReceiver {
     private void handleInput(ObjectInputStream in) throws IOException, ClassNotFoundException {
         RunEventType runEventType = (RunEventType) in.readObject();
         if (RunEventType.RunStarted == runEventType) {
-            RunStartedEvent runStartedEvent = (RunStartedEvent) in.readObject();
-            runEventListener.onRunStartedEvent(runStartedEvent);
+            RunStarted runStarted = (RunStarted) in.readObject();
+            runEventListener.onRunStarted(runStarted);
         }
         if (RunEventType.RunFinished == runEventType) {
-            RunFinishedEvent runFinishedEvent = (RunFinishedEvent) in.readObject();
-            runEventListener.onRunFinished(runFinishedEvent);
+            RunFinished runFinished = (RunFinished) in.readObject();
+            runEventListener.onRunFinished(runFinished);
         }
         if (RunEventType.TestStarted == runEventType) {
-            TestStartedEvent testStarted = (TestStartedEvent) in.readObject();
+            TestStarted testStarted = (TestStarted) in.readObject();
             runEventListener.onTestStarted(testStarted);
         }
     }

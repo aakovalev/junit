@@ -6,10 +6,10 @@ import org.junit.runner.Result;
 import java.io.Serializable;
 
 @EqualsAndHashCode
-public class RunFinishedEvent implements Serializable {
+public class RunFinished implements Serializable {
     private Result result;
 
-    public RunFinishedEvent(Result result) {
+    public RunFinished(Result result) {
         this.result = result;
     }
 }

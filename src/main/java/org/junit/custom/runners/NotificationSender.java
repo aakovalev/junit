@@ -12,17 +12,17 @@ public class NotificationSender {
         out = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    public void sendRunStarted(RunStartedEvent event) throws Exception {
+    public void sendRunStarted(RunStarted event) throws Exception {
         out.writeObject(RunEventType.RunStarted);
         out.writeObject(event);
     }
 
-    public void sendRunFinished(RunFinishedEvent event) throws IOException {
+    public void sendRunFinished(RunFinished event) throws IOException {
         out.writeObject(RunEventType.RunFinished);
         out.writeObject(event);
     }
 
-    public void sendTestStarted(TestStartedEvent event) throws IOException {
+    public void sendTestStarted(TestStarted event) throws IOException {
         out.writeObject(RunEventType.TestStarted);
         out.writeObject(event);
     }
