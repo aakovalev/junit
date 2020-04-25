@@ -1,5 +1,6 @@
 package org.junit.custom.runners;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,23 +8,29 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.mockito.Mockito;
 
+import java.io.IOException;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
+@Slf4j
 public class NotificationSenderTest {
 
     private static final String LOCALHOST = "localhost";
     private static final int PORT = 1234;
-    private static final int TIMEOUT = 3;
+    private static final int TIMEOUT = 3000;
     private static final String RUN_STARTED = "testRunStarted";
+    private static final String TEST_STARTED = "testStarted";
+
     private NotificationReceiver receiver;
     private RunEventListener listener;
     private NotificationSender sender;
 
     @Before
     public void setUp() throws Exception {
+        log.info("Set up test...");
         receiver = new NotificationReceiver(PORT);
         listener = Mockito.mock(RunEventListener.class);
         receiver.addListener(listener);
@@ -33,6 +40,7 @@ public class NotificationSenderTest {
 
     @After
     public void tearDown() throws Exception {
+        log.info("Stopped receiver...");
         receiver.stop();
     }
 
@@ -48,6 +56,19 @@ public class NotificationSenderTest {
         RunFinishedEvent event = makeRunFinishedEvent();
         sender.sendRunFinished(event);
         verify(listener, timeout(TIMEOUT)).onRunFinished(any(RunFinishedEvent.class));
+    }
+
+    @Test
+    public void testTestStarted() throws IOException {
+        TestStartedEvent event = makeTestStartedEvent();
+        sender.sendTestStarted(event);
+        verify(listener, timeout(TIMEOUT)).onTestStarted(eq(event));
+    }
+
+    private TestStartedEvent makeTestStartedEvent() {
+        Description testDescription = Description
+                .createTestDescription(getClass(), TEST_STARTED);
+        return new TestStartedEvent(testDescription);
     }
 
     private RunFinishedEvent makeRunFinishedEvent() {

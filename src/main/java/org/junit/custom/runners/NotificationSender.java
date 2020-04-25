@@ -21,4 +21,9 @@ public class NotificationSender {
         out.writeObject(RunEventType.RunFinished);
         out.writeObject(event);
     }
+
+    public void sendTestStarted(TestStartedEvent event) throws IOException {
+        out.writeObject(RunEventType.TestStarted);
+        out.writeObject(event);
+    }
 }
