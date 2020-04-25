@@ -72,14 +72,16 @@ public class NotificationSenderTest {
     }
 
     private TestFinished makeTestFinishedEvent() {
-        Description testDescription = Description
-                .createTestDescription(getClass(), TEST_FINISHED);
+        Description testDescription = makeDescription(TEST_FINISHED);
         return new TestFinished(testDescription);
     }
 
+    private Description makeDescription(String description) {
+        return Description.createTestDescription(getClass(), description);
+    }
+
     private TestStarted makeTestStartedEvent() {
-        Description testDescription = Description
-                .createTestDescription(getClass(), TEST_STARTED);
+        Description testDescription = makeDescription(TEST_STARTED);
         return new TestStarted(testDescription);
     }
 
@@ -88,8 +90,7 @@ public class NotificationSenderTest {
     }
 
     private RunStarted makeRunStartedEvent() {
-        Description testRunDescription = Description
-                .createTestDescription(getClass(), RUN_STARTED);
+        Description testRunDescription = makeDescription(RUN_STARTED);
         return new RunStarted(testRunDescription);
     }
 }
