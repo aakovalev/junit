@@ -39,7 +39,6 @@ public class NotificationSenderTest {
 
     @After
     public void tearDown() throws Exception {
-        log.info("Stopped receiver...");
         receiver.stop();
     }
 
