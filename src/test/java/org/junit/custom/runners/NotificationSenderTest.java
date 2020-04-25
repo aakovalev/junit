@@ -30,7 +30,6 @@ public class NotificationSenderTest {
 
     @Before
     public void setUp() throws Exception {
-        log.info("Set up test...");
         receiver = new NotificationReceiver(PORT);
         listener = Mockito.mock(RunEventListener.class);
         receiver.addListener(listener);
