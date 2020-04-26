@@ -8,4 +8,8 @@ public interface RunEventListener {
     void onTestStarted(TestStarted event);
 
     void onTestFinished(TestFinished event);
+
+    void onTestIgnored(TestIgnored event);
+
+    void onTestFailure(TestFailure event);
 }

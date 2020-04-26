@@ -24,6 +24,8 @@ public class NotificationSenderTest {
     private static final String RUN_STARTED = "testRunStarted";
     private static final String TEST_STARTED = "testStarted";
     private static final String TEST_FINISHED = "testFinished";
+    private static final String TEST_IGNORED = "testIgnored";
+    private static final String TEST_FAILURE = "testFailure";
 
     private NotificationReceiver receiver;
     private RunEventListener listener;
@@ -71,9 +73,32 @@ public class NotificationSenderTest {
         verify(listener, timeout(TIMEOUT)).onTestFinished(eq(event));
     }
 
+    @Test
+    public void testTestIgnored() throws IOException {
+        TestIgnored event = makeTestIgnoredEvent();
+        sender.sendTestIgnored(event);
+        verify(listener, timeout(TIMEOUT)).onTestIgnored(eq(event));
+    }
+
+    @Test
+    public void testTestFailure() throws IOException {
+        TestFailure event = makeTestFailureEvent();
+        sender.sendTestFailure(event);
+        verify(listener, timeout(TIMEOUT)).onTestFailure(eq(event));
+    }
+
+    private TestFailure makeTestFailureEvent() {
+        return new TestFailure(
+                makeDescription(TEST_FAILURE),
+                new RuntimeException("Something went wrong"));
+    }
+
+    private TestIgnored makeTestIgnoredEvent() {
+        return new TestIgnored(makeDescription(TEST_IGNORED));
+    }
+
     private TestFinished makeTestFinishedEvent() {
-        Description testDescription = makeDescription(TEST_FINISHED);
-        return new TestFinished(testDescription);
+        return new TestFinished(makeDescription(TEST_FINISHED));
     }
 
     private Description makeDescription(String description) {
@@ -81,8 +106,7 @@ public class NotificationSenderTest {
     }
 
     private TestStarted makeTestStartedEvent() {
-        Description testDescription = makeDescription(TEST_STARTED);
-        return new TestStarted(testDescription);
+        return new TestStarted(makeDescription(TEST_STARTED));
     }
 
     private RunFinished makeRunFinishedEvent() {
@@ -90,7 +114,6 @@ public class NotificationSenderTest {
     }
 
     private RunStarted makeRunStartedEvent() {
-        Description testRunDescription = makeDescription(RUN_STARTED);
-        return new RunStarted(testRunDescription);
+        return new RunStarted(makeDescription(RUN_STARTED));
     }
 }

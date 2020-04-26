@@ -31,4 +31,14 @@ public class NotificationSender {
         out.writeObject(RunEventType.TestFinished);
         out.writeObject(event);
     }
+
+    public void sendTestIgnored(TestIgnored event) throws IOException {
+        out.writeObject(RunEventType.TestIgnored);
+        out.writeObject(event);
+    }
+
+    public void sendTestFailure(TestFailure event) throws IOException {
+        out.writeObject(RunEventType.TestFailure);
+        out.writeObject(event);
+    }
 }

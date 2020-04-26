@@ -1,5 +1,5 @@
 package org.junit.custom.runners;
 
 public enum RunEventType {
-    RunFinished, TestStarted, TestFinished, RunStarted
+    RunFinished, TestStarted, TestFinished, TestIgnored, TestFailure, RunStarted
 }
