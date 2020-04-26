@@ -12,4 +12,6 @@ public interface RunEventListener {
     void onTestIgnored(TestIgnored event);
 
     void onTestFailure(TestFailure event);
+
+    void onTestAssumptionFailure(TestAssumptionFailure event);
 }

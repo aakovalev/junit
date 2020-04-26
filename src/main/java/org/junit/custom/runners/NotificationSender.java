@@ -41,4 +41,9 @@ public class NotificationSender {
         out.writeObject(RunEventType.TestFailure);
         out.writeObject(event);
     }
+
+    public void sendTestAssumptionFailure(TestAssumptionFailure event) throws IOException {
+        out.writeObject(RunEventType.TestAssumptionFailure);
+        out.writeObject(event);
+    }
 }

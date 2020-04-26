@@ -94,5 +94,10 @@ class NotificationReceiver {
             TestFailure testFailure = (TestFailure) in.readObject();
             runEventListener.onTestFailure(testFailure);
         }
+        if (RunEventType.TestAssumptionFailure == runEventType) {
+            TestAssumptionFailure testAssumptionFailure =
+                    (TestAssumptionFailure) in.readObject();
+            runEventListener.onTestAssumptionFailure(testAssumptionFailure);
+        }
     }
 }

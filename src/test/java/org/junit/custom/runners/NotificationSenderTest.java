@@ -26,6 +26,7 @@ public class NotificationSenderTest {
     private static final String TEST_FINISHED = "testFinished";
     private static final String TEST_IGNORED = "testIgnored";
     private static final String TEST_FAILURE = "testFailure";
+    private static final String TEST_ASSUMPTION_FAILURE = "testAssumptionFailure";
 
     private NotificationReceiver receiver;
     private RunEventListener listener;
@@ -85,6 +86,19 @@ public class NotificationSenderTest {
         TestFailure event = makeTestFailureEvent();
         sender.sendTestFailure(event);
         verify(listener, timeout(TIMEOUT)).onTestFailure(eq(event));
+    }
+
+    @Test
+    public void testTestAssumptionFailure() throws IOException {
+        TestAssumptionFailure event = makeTestAssumptionFailureEvent();
+        sender.sendTestAssumptionFailure(event);
+        verify(listener, timeout(TIMEOUT)).onTestAssumptionFailure(eq(event));
+    }
+
+    private TestAssumptionFailure makeTestAssumptionFailureEvent() {
+        return new TestAssumptionFailure(
+                makeDescription(TEST_ASSUMPTION_FAILURE),
+                new RuntimeException("Test failed"));
     }
 
     private TestFailure makeTestFailureEvent() {
