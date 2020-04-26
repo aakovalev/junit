@@ -7,9 +7,11 @@ import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 
 import java.lang.reflect.Method;
+import java.util.Random;
 
 @Slf4j
 public class ExtJVMRunner extends Runner {
+    private static final int MAX_PORT = 0xffff;
     private Class testClass;
 
     public ExtJVMRunner(Class testClass) {
@@ -31,21 +33,26 @@ public class ExtJVMRunner extends Runner {
                 if (method.isAnnotationPresent(Test.class)) {
                     notifier.fireTestStarted(Description
                             .createTestDescription(testClass, method.getName()));
-                    method.invoke(testObject);
-                    notifier.fireTestFinished(Description
-                            .createTestDescription(testClass, method.getName()));
                     /*
-                        int port = Random.nextInt(MAX_PORT);
-                        RunNotifier remoteNotifier = new RemoteRunNotifier(port);
-                        NotificationLink notificationLink = new NotificationLink(remoteNotifier, notifier);
+                        int port = getReceiverPort();
+                        NotificationReceiver receiver = new NotificationReceiver(port);
+                        receiver.addListener(
+                            listener that notifies local run notifier using
+                            events from external runner);
                         ExternalJVM jvm = new ExternalJVM();
                         String[] args = new String() { testClass, testMethod, port };
                         jvm.start(JUnitBootstrap.class, args);
                      */
+                    notifier.fireTestFinished(Description
+                            .createTestDescription(testClass, method.getName()));
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private int getReceiverPort() {
+        return new Random().nextInt(MAX_PORT);
     }
 }
