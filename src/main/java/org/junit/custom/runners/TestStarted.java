@@ -12,4 +12,8 @@ public class TestStarted implements Serializable {
     public TestStarted(Description description) {
         this.description = description;
     }
+
+    public Description getDescription() {
+        return this.description;
+    }
 }

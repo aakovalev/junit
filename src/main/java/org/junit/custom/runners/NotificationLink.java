@@ -24,7 +24,7 @@ public class NotificationLink implements RunEventListener {
 
     @Override
     public void onTestStarted(TestStarted event) {
-
+        notifier.fireTestStarted(event.getDescription());
     }
 
     @Override

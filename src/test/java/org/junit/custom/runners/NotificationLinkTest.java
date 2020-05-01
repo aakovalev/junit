@@ -36,9 +36,7 @@ public class NotificationLinkTest {
 
     @Test
     public void shouldTriggerNotifierOnRunStarted() {
-        Description description = Description
-                .createTestDescription(
-                        getClass(), RunEventType.RunStarted.name());
+        Description description = makeDescription(RunEventType.RunStarted.name());
         link.onRunStarted(new RunStarted(description));
         verify(notifier, times(ONCE)).fireTestRunStarted(eq(description));
     }
@@ -48,5 +46,16 @@ public class NotificationLinkTest {
         Result result = new Result();
         link.onRunFinished(new RunFinished(result));
         verify(notifier, times(ONCE)).fireTestRunFinished(eq(result));
+    }
+
+    @Test
+        public void shouldTriggerNotifierOnTestStarted() {
+        Description description = makeDescription(RunEventType.RunFinished.name());
+        link.onTestStarted(new TestStarted(description));
+        verify(notifier, times(ONCE)).fireTestStarted(eq(description));
+    }
+
+    private Description makeDescription(String descriptionAsText) {
+        return Description.createTestDescription(getClass(), descriptionAsText);
     }
 }
