@@ -36,9 +36,7 @@ public class ExtJVMRunner extends Runner {
                     /*
                         int port = getReceiverPort();
                         NotificationReceiver receiver = new NotificationReceiver(port);
-                        receiver.addListener(
-                            listener that notifies local run notifier using
-                            events from external runner);
+                        NotificationLink link = new NotificationLink(receiver, notifier);
                         ExternalJVM jvm = new ExternalJVM();
                         String[] args = new String() { testClass, testMethod, port };
                         jvm.start(JUnitBootstrap.class, args);
