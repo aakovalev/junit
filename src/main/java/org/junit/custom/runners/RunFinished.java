@@ -12,4 +12,8 @@ public class RunFinished implements Serializable {
     public RunFinished(Result result) {
         this.result = result;
     }
+
+    public Result getResult() {
+        return result;
+    }
 }
