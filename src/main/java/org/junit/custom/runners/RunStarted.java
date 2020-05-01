@@ -12,4 +12,8 @@ public class RunStarted implements Serializable {
     public RunStarted(Description description) {
         this.description = description;
     }
+
+    public Description getDescription() {
+        return this.description;
+    }
 }
