@@ -29,7 +29,7 @@ public class NotificationLink implements RunEventListener {
 
     @Override
     public void onTestFinished(TestFinished event) {
-
+        notifier.fireTestFinished(event.getDescription());
     }
 
     @Override

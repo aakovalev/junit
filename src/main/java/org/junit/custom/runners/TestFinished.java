@@ -12,4 +12,8 @@ public class TestFinished implements Serializable {
     public TestFinished(Description description) {
         this.description = description;
     }
+
+    public Description getDescription() {
+        return description;
+    }
 }

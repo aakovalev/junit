@@ -30,7 +30,7 @@ public class NotificationLinkTest {
     }
 
     @Test
-    public void shouldBeReceiverListener() {
+    public void shouldListenToReceiever() {
         verify(receiver, times(ONCE)).addListener(eq(link));
     }
 
@@ -49,10 +49,17 @@ public class NotificationLinkTest {
     }
 
     @Test
-        public void shouldTriggerNotifierOnTestStarted() {
-        Description description = makeDescription(RunEventType.RunFinished.name());
+    public void shouldTriggerNotifierOnTestStarted() {
+        Description description = makeDescription(RunEventType.TestStarted.name());
         link.onTestStarted(new TestStarted(description));
         verify(notifier, times(ONCE)).fireTestStarted(eq(description));
+    }
+
+    @Test
+    public void shouldTriggerNotifierOnTestFinished() {
+        Description description = makeDescription(RunEventType.TestFinished.name());
+        link.onTestFinished(new TestFinished(description));
+        verify(notifier, times(ONCE)).fireTestFinished(eq(description));
     }
 
     private Description makeDescription(String descriptionAsText) {
