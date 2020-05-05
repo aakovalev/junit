@@ -39,7 +39,7 @@ public class NotificationLink implements RunEventListener {
 
     @Override
     public void onTestFailure(TestFailure event) {
-
+        notifier.fireTestFailure(event.getFailure());
     }
 
     @Override

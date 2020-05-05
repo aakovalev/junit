@@ -62,6 +62,14 @@ public class NotificationLinkTest {
         verify(notifier, times(ONCE)).fireTestFinished(eq(description));
     }
 
+    @Test
+    public void shouldTriggerNotifierOnTestFailure() {
+        Description description = makeDescription(RunEventType.TestFailure.name());
+        TestFailure failure = new TestFailure(description, new RuntimeException("It happens!"));
+        link.onTestFailure(failure);
+        verify(notifier, times(ONCE)).fireTestFailure(eq(failure.getFailure()));
+    }
+
     private Description makeDescription(String descriptionAsText) {
         return Description.createTestDescription(getClass(), descriptionAsText);
     }

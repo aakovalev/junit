@@ -37,4 +37,8 @@ public class TestFailure implements Serializable  {
         }
         return false;
     }
+
+    public Failure getFailure() {
+        return this.failure;
+    }
 }
