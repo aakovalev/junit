@@ -12,4 +12,8 @@ public class TestIgnored implements Serializable {
     public TestIgnored(Description description) {
         this.description = description;
     }
+
+    public Description getDescription() {
+        return description;
+    }
 }

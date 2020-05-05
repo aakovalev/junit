@@ -3,13 +3,11 @@ package org.junit.custom.runners;
 import org.junit.runner.notification.RunNotifier;
 
 public class NotificationLink implements RunEventListener {
-    private final NotificationReceiver receiver;
     private final RunNotifier notifier;
 
     public NotificationLink(NotificationReceiver receiver, RunNotifier notifier) {
-        this.receiver = receiver;
         this.notifier = notifier;
-        this.receiver.addListener(this);
+        receiver.addListener(this);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class NotificationLink implements RunEventListener {
 
     @Override
     public void onTestIgnored(TestIgnored event) {
-
+        notifier.fireTestIgnored(event.getDescription());
     }
 
     @Override
