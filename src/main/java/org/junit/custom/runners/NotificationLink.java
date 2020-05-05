@@ -42,6 +42,6 @@ public class NotificationLink implements RunEventListener {
 
     @Override
     public void onTestAssumptionFailure(TestAssumptionFailure event) {
-
+        notifier.fireTestAssumptionFailed(event.getFailure());
     }
 }

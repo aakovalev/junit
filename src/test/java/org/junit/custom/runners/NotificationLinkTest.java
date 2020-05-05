@@ -78,6 +78,15 @@ public class NotificationLinkTest {
         verify(notifier, times(ONCE)).fireTestIgnored(eq(description));
     }
 
+    @Test
+    public void shouldTriggerNotifierOnTestAssumptionFailure() {
+        Description description = makeDescription(RunEventType.TestFailure.name());
+        TestAssumptionFailure failure = new TestAssumptionFailure(
+                description, new RuntimeException("Test assertion failed"));
+        link.onTestAssumptionFailure(failure);
+        verify(notifier, times(ONCE)).fireTestAssumptionFailed(eq(failure.getFailure()));
+    }
+
     private Description makeDescription(String descriptionAsText) {
         return Description.createTestDescription(getClass(), descriptionAsText);
     }
